@@ -1,0 +1,74 @@
+export enum Routes {
+  // Auth Routes
+  AUTH_LOGIN = 'login',
+  AUTH_REGISTER = 'register',
+  AUTH_LOGOUT = 'logout',
+  AUTH_REFRESH = 'refresh',
+  AUTH_VERIFY = 'verify',
+  AUTH_FORGOT_PASSWORD = 'forgot-password',
+  AUTH_RESET_PASSWORD = 'reset-password',
+  AUTH_CHANGE_PASSWORD = 'change-password',
+
+  // User Routes
+  CREATE_USER = '',
+  GET_USERS = '',
+  UPDATE_USER = ':id',
+  DELETE_USER = ':id',
+  GET_ONE_USER = ':id',
+  GET_USER_PROFILE = 'profile',
+  UPDATE_USER_PROFILE = 'profile',
+  BULK_DELETE_USERS = 'bulk-delete',
+
+  // Drone Routes
+  REGISTER_DRONE = 'register',
+  GET_DRONES = '',
+  GET_ONE_DRONE = ':id',
+  UPDATE_DRONE = ':id',
+  DELETE_DRONE = ':id',
+  LOAD_DRONE = ':id/load',
+  GET_DRONE_MEDICATIONS = ':id/medications',
+  GET_AVAILABLE_DRONES = 'available',
+  GET_DRONE_BATTERY = ':id/battery',
+  UPDATE_DRONE_STATE = ':id/state',
+  SCHEDULE_MAINTENANCE = ':id/maintenance',
+
+  // Medication Routes
+  CREATE_MEDICATION = '',
+  GET_MEDICATIONS = '',
+  GET_ONE_MEDICATION = ':id',
+  UPDATE_MEDICATION = ':id',
+  DELETE_MEDICATION = ':id',
+  UPLOAD_MEDICATION_IMAGE = ':id/image',
+
+  // Delivery Routes
+  CREATE_DELIVERY = '',
+  GET_DELIVERIES = '',
+  GET_ONE_DELIVERY = ':id',
+  UPDATE_DELIVERY = ':id',
+  CANCEL_DELIVERY = ':id/cancel',
+  ASSIGN_DELIVERY = ':id/assign',
+  START_DELIVERY = ':id/start',
+  COMPLETE_DELIVERY = ':id/complete',
+  TRACK_DELIVERY = ':id/track',
+
+  // Notification Routes
+  GET_NOTIFICATIONS = '',
+  MARK_NOTIFICATION_READ = ':id/read',
+  MARK_ALL_READ = 'mark-all-read',
+  DELETE_NOTIFICATION = ':id',
+
+  // Audit Routes
+  GET_AUDIT_LOGS = '',
+  EXPORT_AUDIT_LOGS = 'export',
+
+  // Dashboard Routes
+  GET_DASHBOARD_STATS = 'stats',
+  GET_DELIVERY_ANALYTICS = 'analytics/deliveries',
+  GET_DRONE_ANALYTICS = 'analytics/drones',
+  GET_PERFORMANCE_METRICS = 'analytics/performance',
+
+  // Health Routes
+  HEALTH_CHECK = 'health',
+  READINESS_CHECK = 'ready',
+  LIVENESS_CHECK = 'live',
+}
