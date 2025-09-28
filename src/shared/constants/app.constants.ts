@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { DroneModel, DroneState } from '../enums/enum';
+import { DroneModel, DroneStatus } from '../enums/enum';
 
 // Security
 export const SENSITIVE_FIELDS = ['password', 'token', 'authorization'] as const;
@@ -77,12 +77,12 @@ export const DRONE_WEIGHT_LIMITS: Record<DroneModel, number> = {
 };
 
 // Valid state transitions for drones
-export const VALID_STATE_TRANSITIONS: Record<DroneState, DroneState[]> = {
-  [DroneState.IDLE]: [DroneState.LOADING, DroneState.MAINTENANCE],
-  [DroneState.LOADING]: [DroneState.LOADED, DroneState.IDLE],
-  [DroneState.LOADED]: [DroneState.DELIVERING, DroneState.IDLE],
-  [DroneState.DELIVERING]: [DroneState.DELIVERED, DroneState.RETURNING],
-  [DroneState.DELIVERED]: [DroneState.RETURNING],
-  [DroneState.RETURNING]: [DroneState.IDLE],
-  [DroneState.MAINTENANCE]: [DroneState.IDLE],
+export const VALID_STATE_TRANSITIONS: Record<DroneStatus, DroneStatus[]> = {
+  [DroneStatus.IDLE]: [DroneStatus.LOADING, DroneStatus.MAINTENANCE],
+  [DroneStatus.LOADING]: [DroneStatus.LOADED, DroneStatus.IDLE],
+  [DroneStatus.LOADED]: [DroneStatus.DELIVERING, DroneStatus.IDLE],
+  [DroneStatus.DELIVERING]: [DroneStatus.DELIVERED, DroneStatus.RETURNING],
+  [DroneStatus.DELIVERED]: [DroneStatus.RETURNING],
+  [DroneStatus.RETURNING]: [DroneStatus.IDLE],
+  [DroneStatus.MAINTENANCE]: [DroneStatus.IDLE],
 };

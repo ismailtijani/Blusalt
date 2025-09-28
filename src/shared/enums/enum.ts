@@ -5,7 +5,7 @@ export enum DroneModel {
   HEAVYWEIGHT = 'Heavyweight',
 }
 
-export enum DroneState {
+export enum DroneStatus {
   IDLE = 'IDLE',
   LOADING = 'LOADING',
   LOADED = 'LOADED',
@@ -48,4 +48,19 @@ export enum UserType {
   PHARMACY = 'PHARMACY',
   MEDICAL_CENTER = 'MEDICAL_CENTER',
   INDIVIDUAL = 'INDIVIDUAL',
+}
+
+export enum AuditAction {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+  LOGIN = 'LOGIN',
+  LOGOUT = 'LOGOUT',
+  DRONE_LOAD = 'DRONE_LOAD',
+  DRONE_UNLOAD = 'DRONE_UNLOAD',
+  DRONE_STATE_CHANGE = 'DRONE_STATE_CHANGE',
+  DELIVERY_ASSIGN = 'DELIVERY_ASSIGN',
+  DELIVERY_COMPLETE = 'DELIVERY_COMPLETE',
+  BATTERY_CHECK = 'BATTERY_CHECK',
+  LOCATION_UPDATE = 'LOCATION_UPDATE',
 }
