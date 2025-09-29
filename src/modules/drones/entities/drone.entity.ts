@@ -17,10 +17,10 @@ export class Drone extends BaseEntity {
   })
   model: DroneModel;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  @Column('float')
   weightLimit: number; // in grams, max 500
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 100 })
+  @Column({ type: 'decimal', default: 100 })
   batteryCapacity: number; // percentage
 
   @Column({
@@ -31,25 +31,25 @@ export class Drone extends BaseEntity {
   @Index()
   status: DroneStatus;
 
-  @Column({ type: 'decimal', precision: 10, scale: 8, nullable: true })
+  @Column({ type: 'float', nullable: true })
   currentLatitude: number;
 
-  @Column({ type: 'decimal', precision: 11, scale: 8, nullable: true })
+  @Column({ type: 'float', nullable: true })
   currentLongitude: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  @Column({ type: 'float', default: 0 })
   currentLoadWeight: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 8, default: 0 })
+  @Column({ type: 'float', default: 0 })
   baseLatitude: number;
 
-  @Column({ type: 'decimal', precision: 11, scale: 8, default: 0 })
+  @Column({ type: 'float', default: 0 })
   baseLongitude: number;
 
   @Column({ nullable: true })
   lastMaintenanceDate: Date;
 
-  @Column({ type: 'integer', default: 0 })
+  @Column({ type: 'float', default: 0 })
   totalFlightTime: number; // in minutes
 
   @Column({ default: true })

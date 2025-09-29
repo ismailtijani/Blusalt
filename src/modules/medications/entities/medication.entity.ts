@@ -8,7 +8,7 @@ export class Medication extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column('float')
   weight: number; // in grams
 
   @Column({ unique: true })
@@ -30,9 +30,6 @@ export class Medication extends BaseEntity {
 
   @Column({ default: true })
   isActive: boolean;
-
-  @Column({ nullable: true })
-  manufacturer: string;
 
   // Relationships
   @OneToMany(

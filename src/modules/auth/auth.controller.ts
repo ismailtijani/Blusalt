@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  Request,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Routes } from 'src/shared/enums/routes.enum';
 import { SuccessResponse } from 'src/shared/dtos/success-response.dto';
@@ -21,7 +14,7 @@ export class AuthController {
   @Post(Routes.LOGIN)
   @HttpCode(HttpStatus.OK)
   @Serialize(LoginResponseDto)
-  async login(@Body() loginDto: LoginDto, @Request() req: Request) {
+  async login(@Body() loginDto: LoginDto) {
     const result = await this.authService.login(
       loginDto,
       // req.,

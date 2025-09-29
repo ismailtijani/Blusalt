@@ -15,7 +15,7 @@ export class DroneMedication extends BaseEntity {
   @Column()
   quantity: number;
 
-  @Column()
+  @Column('float')
   totalWeight: number;
 
   @Column()
@@ -28,10 +28,10 @@ export class DroneMedication extends BaseEntity {
   @ManyToOne(() => Drone, (drone) => drone.droneMedications, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'drone_id' })
+  @JoinColumn({ name: 'droneId' })
   drone: Drone;
 
   @ManyToOne(() => Medication, (medication) => medication.droneMedications)
-  @JoinColumn({ name: 'medication_id' })
+  @JoinColumn({ name: 'medicationId' })
   medication: Medication;
 }

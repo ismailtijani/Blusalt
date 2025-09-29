@@ -37,10 +37,10 @@ export enum Routes {
   // Medication Routes
   CREATE_MEDICATION = '',
   GET_MEDICATIONS = '',
-  GET_ONE_MEDICATION = ':id',
-  UPDATE_MEDICATION = ':id',
-  DELETE_MEDICATION = ':id',
-  UPLOAD_MEDICATION_IMAGE = ':id/image',
+  GET_ONE_MEDICATION = ':medicationId',
+  UPDATE_MEDICATION = ':medicationId',
+  DELETE_MEDICATION = ':medicationId',
+  UPLOAD_MEDICATION_IMAGE = ':medicationId/image',
 
   // Delivery Routes
   CREATE_DELIVERY = '',

@@ -116,9 +116,9 @@ export class DroneService extends BaseService<Drone> {
         quantity: item.quantity,
         totalWeight: item.weight,
         isDelivered: false,
+        loadedAt: new Date(),
       });
     }
-
     // Update drone weight and state
     await this.repository.update(drone.id, {
       currentLoadWeight: totalWeight,
@@ -134,10 +134,11 @@ export class DroneService extends BaseService<Drone> {
     //   newValues: { totalWeight, itemCount: loadDroneDto.items.length },
     // });
 
-    return await this.findById(droneId, [
+    const loadedDrone = await this.findById(droneId, [
       'droneMedications',
       'droneMedications.medication',
     ]);
+    return loadedDrone;
   }
 
   async getDroneMedications(droneId: string) {

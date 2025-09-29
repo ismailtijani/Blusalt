@@ -49,4 +49,10 @@ export class LoginResponseDto {
 
   @Expose()
   updatedAt: Date;
+
+  @Expose()
+  accessToken: string;
+
+  @Expose()
+  refreshToken: string;
 }

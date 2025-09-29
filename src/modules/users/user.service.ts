@@ -26,10 +26,7 @@ export class UserService extends BaseService<User> {
     super(userRepository);
   }
 
-  async createUser(
-    createUserDto: CreateUserDto,
-    createdBy?: string,
-  ): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.existsByField('email', createUserDto.email);
     if (existingUser) {
       throw new BadRequestException(ErrorMessages.EMAIL_ALREADY_EXISTS);
@@ -73,7 +70,6 @@ export class UserService extends BaseService<User> {
   async updateUser(
     userId: string,
     updateUserDto: UpdateUserDto,
-    updatedBy?: string,
   ): Promise<User> {
     const existingUser = await this.findById(userId);
 
@@ -228,12 +224,8 @@ export class UserService extends BaseService<User> {
     });
   }
 
-  async toggleUserStatus(
-    userId: string,
-    isActive: boolean,
-    updatedBy?: string,
-  ): Promise<User> {
-    const user = await this.findById(userId);
+  async toggleUserStatus(userId: string, isActive: boolean): Promise<User> {
+    await this.findById(userId);
     const updatedUser = await this.update(userId, { isActive });
 
     // await this.auditLogService.log({
@@ -249,8 +241,8 @@ export class UserService extends BaseService<User> {
     return updatedUser;
   }
 
-  async verifyUser(userId: string, verifiedBy?: string): Promise<User> {
-    const user = await this.findById(userId);
+  async verifyUser(userId: string): Promise<User> {
+    await this.findById(userId);
     const updatedUser = await this.update(userId, { isVerified: true });
 
     // await this.auditLogService.log({
@@ -291,8 +283,8 @@ export class UserService extends BaseService<User> {
   /**
    * Delete user (soft delete)
    */
-  async deleteUser(userId: string, deletedBy?: string): Promise<void> {
-    const user = await this.findById(userId);
+  async deleteUser(userId: string): Promise<void> {
+    await this.findById(userId);
 
     await this.delete(userId);
 

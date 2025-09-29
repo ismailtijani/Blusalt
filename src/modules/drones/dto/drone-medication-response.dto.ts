@@ -1,15 +1,28 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+class MedicationResponseDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  code: string;
+
+  @Expose()
+  weight: number;
+
+  @Expose()
+  type: string;
+
+  @Expose()
+  imageUrl: string;
+}
 
 export class DroneMedicationResponseDto {
   @Expose()
-  medication: {
-    id: string;
-    name: string;
-    code: string;
-    weight: number;
-    type: string;
-    imageUrl?: string;
-  };
+  @Type(() => MedicationResponseDto)
+  medication: MedicationResponseDto;
 
   @Expose()
   quantity: number;
@@ -19,4 +32,7 @@ export class DroneMedicationResponseDto {
 
   @Expose()
   loadedAt: Date;
+
+  @Expose()
+  isDelivered: boolean;
 }
