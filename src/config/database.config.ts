@@ -12,7 +12,8 @@ export const DatabaseConfig = (
   database: configService.get<string>('DATABASE_NAME', 'drone_logistics'),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
-  synchronize: configService.get('NODE_ENV') === 'development',
+  synchronize: true,
+  // synchronize: configService.get('NODE_ENV') === 'development',
   logging: configService.get('NODE_ENV') === 'development',
   ssl:
     configService.get('NODE_ENV') === 'production'

@@ -1,26 +1,354 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import {
+  BaseService,
+  ErrorMessages,
+  HelperService,
+  PaginatedResult,
+  UserRole,
+} from 'src/shared';
 import { CreateUserDto } from './dto/create-user.dto';
+import { ConfigService } from '@nestjs/config';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
 
 @Injectable()
-export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+export class UserService extends BaseService<User> {
+  constructor(
+    @InjectRepository(User)
+    userRepository: Repository<User>,
+    // private readonly auditLogService: AuditLogService,
+    private readonly configService: ConfigService,
+    private readonly helperService: HelperService,
+  ) {
+    super(userRepository);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async createUser(
+    createUserDto: CreateUserDto,
+    createdBy?: string,
+  ): Promise<User> {
+    const existingUser = await this.existsByField('email', createUserDto.email);
+    if (existingUser) {
+      throw new BadRequestException(ErrorMessages.EMAIL_ALREADY_EXISTS);
+    }
+
+    const hashedPassword = await this.helperService.hashData(
+      createUserDto.password,
+    );
+
+    const user = await this.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findByEmail(email: string): Promise<User | null> {
+    return await this.repository.findOne({
+      where: { email, isActive: true },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findByEmailIncludeInactive(email: string): Promise<User | null> {
+    return await this.repository.findOne({
+      where: { email },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async updateRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<void> {
+    await this.repository.update(userId, { refreshToken });
+  }
+
+  async updateLastLogin(userId: string): Promise<void> {
+    await this.repository.update(userId, { lastLoginAt: new Date() });
+  }
+
+  async updateUser(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+    updatedBy?: string,
+  ): Promise<User> {
+    const existingUser = await this.findById(userId);
+
+    if (updateUserDto.email && updateUserDto.email !== existingUser.email) {
+      const emailExists = await this.existsByField(
+        'email',
+        updateUserDto.email,
+      );
+      if (emailExists) {
+        throw new BadRequestException(ErrorMessages.EMAIL_ALREADY_EXISTS);
+      }
+    }
+
+    const updatedUser = await this.update(userId, updateUserDto);
+
+    // Log user update
+    // await this.auditLogService.log({
+    //   action: 'UPDATE',
+    //   entityType: 'User',
+    //   entityId: userId,
+    //   userId: updatedBy,
+    //   description: `User ${existingUser.email} updated`,
+    //   oldValues: { email: existingUser.email, role: existingUser.role },
+    //   newValues: { email: updateUserDto.email || existingUser.email },
+    // });
+
+    return updatedUser;
+  }
+
+  async getUsers(queryData: GetUsersQueryDto): Promise<PaginatedResult<User>> {
+    const {
+      page = 1,
+      limit = 10,
+      searchTerm,
+      role,
+      userType,
+      isActive,
+    } = queryData;
+    const skip = (page - 1) * limit;
+
+    let queryBuilder = this.repository
+      .createQueryBuilder('user')
+      .select([
+        'user.id',
+        'user.firstName',
+        'user.lastName',
+        'user.email',
+        'user.role',
+        'user.userType',
+        'user.organizationName',
+        'user.phoneNumber',
+        'user.isActive',
+        'user.isVerified',
+        'user.lastLoginAt',
+        'user.createdAt',
+      ]);
+
+    // Apply filters
+    if (searchTerm) {
+      queryBuilder = queryBuilder.where(
+        '(LOWER(user.firstName) LIKE LOWER(:search) OR LOWER(user.lastName) LIKE LOWER(:search) OR LOWER(user.email) LIKE LOWER(:search) OR LOWER(user.organizationName) LIKE LOWER(:search))',
+        { search: `%${searchTerm}%` },
+      );
+    }
+
+    if (role) {
+      queryBuilder = queryBuilder.andWhere('user.role = :role', { role });
+    }
+
+    if (userType) {
+      queryBuilder = queryBuilder.andWhere('user.userType = :userType', {
+        userType,
+      });
+    }
+
+    if (isActive !== undefined) {
+      queryBuilder = queryBuilder.andWhere('user.isActive = :isActive', {
+        isActive,
+      });
+    }
+
+    const [users, total] = await queryBuilder
+      .skip(skip)
+      .take(limit)
+      .orderBy('user.createdAt', 'DESC')
+      .getManyAndCount();
+
+    return {
+      data: users,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNext: total > page * limit,
+        hasPrev: page > 1,
+      },
+    };
+  }
+
+  async getUserStatsByRole(): Promise<Record<UserRole, number>> {
+    const stats = await this.repository
+      .createQueryBuilder('user')
+      .select('user.role, COUNT(*) as count')
+      .groupBy('user.role')
+      .getRawMany();
+
+    const result: Record<string, number> = {};
+    for (const stat of stats) {
+      result[stat.user_role] = parseInt(stat.count);
+    }
+
+    return result as Record<UserRole, number>;
+  }
+
+  async getUserStatsByType(): Promise<Record<string, number>> {
+    const stats = await this.repository
+      .createQueryBuilder('user')
+      .select('user.userType, COUNT(*) as count')
+      .where('user.userType IS NOT NULL')
+      .groupBy('user.userType')
+      .getRawMany();
+
+    const result: Record<string, number> = {};
+    for (const stat of stats) {
+      result[stat.user_usertype || 'UNKNOWN'] = parseInt(stat.count);
+    }
+
+    return result;
+  }
+
+  async getRecentUsers(days: number = 7): Promise<User[]> {
+    const dateThreshold = new Date();
+    dateThreshold.setDate(dateThreshold.getDate() - days);
+
+    return await this.repository.find({
+      where: {
+        createdAt: MoreThan(dateThreshold),
+      },
+      select: [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'role',
+        'userType',
+        'organizationName',
+        'createdAt',
+      ],
+      order: { createdAt: 'DESC' },
+      take: 50,
+    });
+  }
+
+  async toggleUserStatus(
+    userId: string,
+    isActive: boolean,
+    updatedBy?: string,
+  ): Promise<User> {
+    const user = await this.findById(userId);
+    const updatedUser = await this.update(userId, { isActive });
+
+    // await this.auditLogService.log({
+    //   action: 'UPDATE',
+    //   entityType: 'User',
+    //   entityId: userId,
+    //   userId: updatedBy,
+    //   description: `User ${user.email} ${isActive ? 'activated' : 'deactivated'}`,
+    //   oldValues: { isActive: user.isActive },
+    //   newValues: { isActive },
+    // });
+
+    return updatedUser;
+  }
+
+  async verifyUser(userId: string, verifiedBy?: string): Promise<User> {
+    const user = await this.findById(userId);
+    const updatedUser = await this.update(userId, { isVerified: true });
+
+    // await this.auditLogService.log({
+    //   action: 'UPDATE',
+    //   entityType: 'User',
+    //   entityId: userId,
+    //   userId: verifiedBy,
+    //   description: `User ${user.email} email verified`,
+    //   oldValues: { isVerified: false },
+    //   newValues: { isVerified: true },
+    // });
+
+    return updatedUser;
+  }
+
+  // async changePassword(
+  //   userId: string,
+  //   newPassword: string,
+  //   changedBy?: string,
+  // ): Promise<void> {
+  //   const saltRounds = 12;
+  //   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+  //   await this.repository.update(userId, {
+  //     password: hashedPassword,
+  //     refreshToken: null, // Invalidate refresh tokens
+  //   });
+
+  //   // await this.auditLogService.log({
+  //   //   action: 'UPDATE',
+  //   //   entityType: 'User',
+  //   //   entityId: userId,
+  //   //   userId: changedBy,
+  //   //   description: 'User password changed',
+  //   // });
+  // }
+
+  /**
+   * Delete user (soft delete)
+   */
+  async deleteUser(userId: string, deletedBy?: string): Promise<void> {
+    const user = await this.findById(userId);
+
+    await this.delete(userId);
+
+    // await this.auditLogService.log({
+    //   action: 'DELETE',
+    //   entityType: 'User',
+    //   entityId: userId,
+    //   userId: deletedBy,
+    //   description: `User ${user.email} deleted`,
+    // });
+  }
+
+  async getClientUsers(): Promise<User[]> {
+    return await this.repository.find({
+      where: {
+        role: UserRole.USER,
+        isActive: true,
+        isVerified: true,
+      },
+      select: [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'organizationName',
+        'userType',
+        'phoneNumber',
+      ],
+      order: { organizationName: 'ASC' },
+    });
+  }
+
+  async getStaffUsers(): Promise<User[]> {
+    return await this.repository.find({
+      where: {
+        role: In([UserRole.ADMIN, UserRole.STAFF]),
+        isActive: true,
+      },
+      select: ['id', 'firstName', 'lastName', 'email', 'role', 'lastLoginAt'],
+      order: { lastLoginAt: 'DESC' },
+    });
+  }
+
+  protected getCreateErrorMessage(): string {
+    return ErrorMessages.USER_CREATE_FAILED;
+  }
+
+  protected getUpdateErrorMessage(): string {
+    return ErrorMessages.USER_UPDATE_FAILED;
+  }
+
+  protected getDeleteErrorMessage(): string {
+    return ErrorMessages.USER_DELETE_FAILED;
+  }
+
+  protected getNotFoundErrorMessage(): string {
+    return ErrorMessages.USER_NOT_FOUND;
   }
 }

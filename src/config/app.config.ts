@@ -1,17 +1,20 @@
 import { ConfigService } from '@nestjs/config';
 
 export const AppConfig = (configService: ConfigService) => ({
-  port: configService.get<number>('PORT', 8080),
-  jwtSecret: configService.get<string>('JWT_SECRET', 'your-secret-key'),
-  jwtExpiresIn: configService.get<string>('JWT_EXPIRES_IN', '15m'),
-  jwtRefreshSecret: configService.get<string>(
+  PORT: configService.get<number>('PORT', 8080),
+  JWT_SECRET: configService.get<string>('JWT_SECRET', 'your-secret-key'),
+  JWT_EXPIRES_IN: configService.get<string>('JWT_EXPIRES_IN', '1h'),
+  JWT_REFRESH_SECRET: configService.get<string>(
     'JWT_REFRESH_SECRET',
     'your-refresh-secret',
   ),
-  jwtRefreshExpiresIn: configService.get<string>(
+  JWT_REFRESH_EXPIRES_IN: configService.get<string>(
     'JWT_REFRESH_EXPIRES_IN',
     '7d',
   ),
-  bcryptRounds: configService.get<number>('BCRYPT_ROUNDS', 12),
-  corsOrigin: configService.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
+  BCRYPT_SALT_ROUNDS: Number(configService.get('BCRYPT_ROUNDS', 6)),
+  CORS_ORIGIN: configService.get<string>(
+    'CORS_ORIGIN',
+    'http://localhost:3000',
+  ),
 });

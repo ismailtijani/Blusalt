@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Drone } from '../../drones/entities/drone.entity';
 import { AuditAction, BaseEntity } from 'src/shared';
+import { Admin } from 'src/modules/admin/entities/admin.entity';
 
 @Entity('audit_logs')
 @Index(['action', 'entityType', 'ipAddress', 'timestamp'])
@@ -20,6 +21,9 @@ export class AuditLog extends BaseEntity {
 
   @Column({ nullable: true })
   userId: string;
+
+  @Column({ nullable: true })
+  adminId: string;
 
   @Column({ nullable: true })
   droneId: string;
@@ -46,6 +50,10 @@ export class AuditLog extends BaseEntity {
   @ManyToOne(() => User, (user) => user.auditLogs, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => Admin, (admin) => admin.auditLogs, { nullable: true })
+  @JoinColumn({ name: 'admin_id' })
+  admin: Admin;
 
   @ManyToOne(() => Drone, (drone) => drone.auditLogs, { nullable: true })
   @JoinColumn({ name: 'drone_id' })

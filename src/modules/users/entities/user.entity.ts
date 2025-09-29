@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   organizationName: string;
 
   @Column({ nullable: true })
-  phoneNumber: number;
+  phoneNumber: string;
 
   @Column({ nullable: true })
   address: string;

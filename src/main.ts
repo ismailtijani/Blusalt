@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import {
   DocumentBuilder,
   SwaggerDocumentOptions,
@@ -14,17 +14,18 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const appConfig = AppConfig(configService);
+  const PORT = appConfig.PORT;
 
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,
-  //     transform: true,
-  //   }),
-  // );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   // Enable CORS
   app.enableCors({
-    origin: appConfig.corsOrigin,
+    origin: [appConfig.CORS_ORIGIN],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
@@ -43,13 +44,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(appConfig.port);
+  await app.listen(appConfig.PORT);
   logger.log(
-    `🚀🚀🚀 Application is running on: http://localhost:${appConfig.port}/api/v1`,
+    `🚀🚀🚀 Application is running on: http://localhost:${PORT}/api/v1`,
   );
-  logger.log(
-    `API Documentation available at: http://localhost:${appConfig.port}/api`,
-  );
+  logger.log(`API Documentation available at: http://localhost:${PORT}/api`);
 }
 bootstrap().catch((error) => {
   console.error('Error starting the server:', error);

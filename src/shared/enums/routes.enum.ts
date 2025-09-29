@@ -1,13 +1,13 @@
 export enum Routes {
   // Auth Routes
-  AUTH_LOGIN = 'login',
-  AUTH_REGISTER = 'register',
-  AUTH_LOGOUT = 'logout',
-  AUTH_REFRESH = 'refresh',
-  AUTH_VERIFY = 'verify',
-  AUTH_FORGOT_PASSWORD = 'forgot-password',
-  AUTH_RESET_PASSWORD = 'reset-password',
-  AUTH_CHANGE_PASSWORD = 'change-password',
+  LOGIN = 'login',
+  SIGNUP = 'signup',
+  LOGOUT = 'logout',
+  REFRESH_TOKEN = 'refresh-token',
+  VERIFY = 'verify',
+  FORGOT_PASSWORD = 'forgot-password',
+  RESET_PASSWORD = 'reset-password',
+  CHANGE_PASSWORD = 'change-password',
 
   // User Routes
   CREATE_USER = '',
