@@ -41,6 +41,7 @@ export enum ErrorMessages {
   DRONE_NO_ITEMS_LOADED = 'No items loaded on this drone',
   DRONE_OVERLOAD = 'Drone cannot carry more than its weight limit',
   DRONE_LOW_BATTERY = 'Drone battery level is below 25% - cannot enter LOADING state',
+  DRONE_INACTIVE = 'Drone is not active',
 
   // Medication Error Messages
   MEDICATION_NOT_FOUND = 'Medication not found',

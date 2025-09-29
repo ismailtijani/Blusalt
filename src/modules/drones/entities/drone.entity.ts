@@ -40,10 +40,10 @@ export class Drone extends BaseEntity {
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   currentLoadWeight: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 8 })
+  @Column({ type: 'decimal', precision: 10, scale: 8, default: 0 })
   baseLatitude: number;
 
-  @Column({ type: 'decimal', precision: 11, scale: 8 })
+  @Column({ type: 'decimal', precision: 11, scale: 8, default: 0 })
   baseLongitude: number;
 
   @Column({ nullable: true })

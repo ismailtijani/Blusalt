@@ -1,3 +1,4 @@
+import { Medication } from 'src/modules/medications/entities/medication.entity';
 import { UserRole } from '../enums/enum';
 
 export interface PaginationMeta {
@@ -29,6 +30,12 @@ export interface CurrentUser {
   sub: string;
   email: string;
   role: string;
+}
+
+export interface LoadItem {
+  medication: Medication;
+  quantity: number;
+  weight: number;
 }
 
 // export interface AuthResponse {

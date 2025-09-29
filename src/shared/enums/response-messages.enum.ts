@@ -35,6 +35,8 @@ export enum ResponseMessages {
   DRONE_MAINTENANCE_SCHEDULED = 'Drone maintenance scheduled',
   BATTERY_STATUS_RETRIEVED = 'Battery status retrieved successfully',
   AVAILABLE_DRONES_RETRIEVED = 'Available drones retrieved successfully',
+  DRONE_LOCATION_UPDATED = 'Drone location updated successfully',
+  DRONE_BATTERY_CHECKED = 'Drone battery level checked successfully',
 
   // Medication Response Messages
   MEDICATION_CREATED = 'Medication created successfully',

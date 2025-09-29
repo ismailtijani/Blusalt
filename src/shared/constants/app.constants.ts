@@ -15,8 +15,8 @@ export const PAGINATION = {
 
 // Drone Constants
 export const MAX_DRONE_WEIGHT = 500; // grams
-export const MIN_BATTERY_FOR_LOADING = 25; // percentage
-export const MIN_BATTERY_FOR_DELIVERY = 30; // percentage
+export const MIN_BATTERY_LEVEL_FOR_LOADING = 25; // percentage
+export const MIN_BATTERY_LEVEL_FOR_DELIVERY = 30; // percentage
 export const CRITICAL_BATTERY_LEVEL = 15; // percentage
 export const DEFAULT_DRONE_SPEED = 60; // km/h
 export const MAX_FLIGHT_TIME = 120; // minutes
