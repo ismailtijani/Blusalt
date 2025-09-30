@@ -14,3 +14,5 @@ export * from './enums/response-messages.enum';
 export * from './enums/routes.enum';
 export * from './decorators/current-user.decorator';
 export * from './interceptors/response-serializer';
+export * from './decorators/ip-address.decorator';
+export * from './decorators/user-agent.decorator';

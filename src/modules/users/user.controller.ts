@@ -10,12 +10,18 @@ import {
   ParseUUIDPipe,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Routes } from 'src/shared/enums/routes.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
   AuthGuard,
+  CurrentUser,
+  GetIpAddress,
+  GetUser,
+  GetUserAgent,
+  Public,
   ResponseMessages,
   Serialize,
   SuccessResponse,
@@ -23,18 +29,44 @@ import {
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Request } from 'express';
 
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   @Post(Routes.CREATE_USER)
+  @Public()
   @HttpCode(HttpStatus.CREATED)
-  @Serialize(UserResponseDto)
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.createUser(createUserDto);
-    return new SuccessResponse(ResponseMessages.USER_CREATED, user);
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @GetUser() user: CurrentUser,
+    @GetIpAddress() ipAddress: string,
+    @GetUserAgent() userAgent: string,
+    @Req() req: Request,
+  ) {
+    const response = await this.userService.createUser(createUserDto);
+
+    // Emit activity log
+    this.eventEmitter.emit('onUserActivity', {
+      action: createUserDto,
+      description: 'User Creation',
+      feedback: '',
+      identity: response.email,
+      maskedAction: false,
+      maskedFeedback: false,
+      what: req.originalUrl,
+      when: new Date().toISOString(),
+      owner: response.id,
+      ipAddress,
+      userAgent,
+    });
+    return new SuccessResponse(ResponseMessages.USER_CREATED);
   }
 
   @Get(Routes.GET_USERS)
@@ -59,9 +91,27 @@ export class UserController {
   async updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
+    @GetUser() user: CurrentUser,
+    @GetIpAddress() ipAddress: string,
+    @GetUserAgent() userAgent: string,
+    @Req() req: Request,
   ) {
-    const user = await this.userService.updateUser(id, updateUserDto);
-    return new SuccessResponse(ResponseMessages.USER_UPDATED, user);
+    const response = await this.userService.updateUser(id, updateUserDto);
+
+    this.eventEmitter.emit('onUserActivity', {
+      action: updateUserDto,
+      description: 'User Update',
+      feedback: response,
+      identity: user.email,
+      maskedAction: false,
+      maskedFeedback: false,
+      what: req.originalUrl,
+      when: new Date().toISOString(),
+      owner: user.sub,
+      ipAddress,
+      userAgent,
+    });
+    return new SuccessResponse(ResponseMessages.USER_UPDATED, response);
   }
 
   @Get('clients')

@@ -10,10 +10,15 @@ import {
   HttpStatus,
   UseGuards,
   Patch,
+  Req,
 } from '@nestjs/common';
 import { MedicationService } from './medication.service';
 import {
   AuthGuard,
+  CurrentUser,
+  GetIpAddress,
+  GetUser,
+  GetUserAgent,
   ResponseMessages,
   Routes,
   Serialize,
@@ -23,18 +28,43 @@ import { MedicationResponseDto } from './dto/medication-response.dto';
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { MedicationQueryDto } from './dto/medication-query.dto';
 import { UpdateMedicationDto } from './dto/update-medication.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Request } from 'express';
 
 @UseGuards(AuthGuard)
 @Controller('medications')
 export class MedicationController {
-  constructor(private readonly medicationService: MedicationService) {}
+  constructor(
+    private readonly medicationService: MedicationService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   @Post(Routes.CREATE_MEDICATION)
   @HttpCode(HttpStatus.CREATED)
   @Serialize(MedicationResponseDto)
-  async createMedication(@Body() createMedicationDto: CreateMedicationDto) {
+  async createMedication(
+    @Body() createMedicationDto: CreateMedicationDto,
+    @GetUser() user: CurrentUser,
+    @GetIpAddress() ipAddress: string,
+    @GetUserAgent() userAgent: string,
+    @Req() req: Request,
+  ) {
     const medication =
       await this.medicationService.createMedication(createMedicationDto);
+    // Emit activity log
+    this.eventEmitter.emit('onUserActivity', {
+      action: createMedicationDto,
+      description: 'Create Medication',
+      feedback: medication,
+      identity: user.email,
+      maskedAction: false,
+      maskedFeedback: false,
+      what: req.originalUrl,
+      when: new Date().toISOString(),
+      owner: user.sub,
+      ipAddress,
+      userAgent,
+    });
     return new SuccessResponse(ResponseMessages.MEDICATION_CREATED, medication);
   }
 
@@ -82,11 +112,30 @@ export class MedicationController {
   async updateMedication(
     @Param('medicationId') medicationId: string,
     @Body() updateMedicationDto: UpdateMedicationDto,
+    @GetUser() user: CurrentUser,
+    @GetIpAddress() ipAddress: string,
+    @GetUserAgent() userAgent: string,
+    @Req() req: Request,
   ) {
     const medication = await this.medicationService.update(
       medicationId,
       updateMedicationDto,
     );
+
+    // Emit activity log
+    this.eventEmitter.emit('onUserActivity', {
+      action: updateMedicationDto,
+      description: 'Update Medication',
+      feedback: medication,
+      identity: user.email,
+      maskedAction: false,
+      maskedFeedback: false,
+      what: req.originalUrl,
+      when: new Date().toISOString(),
+      owner: user.sub,
+      ipAddress,
+      userAgent,
+    });
     return new SuccessResponse(ResponseMessages.MEDICATION_UPDATED, medication);
   }
 

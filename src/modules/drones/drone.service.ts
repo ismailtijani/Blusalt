@@ -30,7 +30,6 @@ export class DroneService extends BaseService<Drone> {
     private readonly droneMedicationRepository: Repository<DroneMedication>,
     @InjectRepository(Medication)
     private readonly medicationRepository: Repository<Medication>,
-    // private readonly auditLogService: AuditLogService,
   ) {
     super(droneRepository);
   }
@@ -52,14 +51,6 @@ export class DroneService extends BaseService<Drone> {
     }
 
     const drone = await this.create(createDroneDto);
-
-    // await this.auditLogService.log({
-    //   action: 'CREATE',
-    //   entityType: 'Drone',
-    //   entityId: drone.id,
-    //   description: `Drone ${drone.serialNumber} registered`,
-    // });
-
     return drone;
   }
 
@@ -106,7 +97,6 @@ export class DroneService extends BaseService<Drone> {
     }
 
     await this.updateDroneState(drone, DroneStatus.LOADING);
-    // await this.updateDroneState(drone, DroneStatus.LOADING, userId);
 
     // Create drone-medication associations
     for (const item of loadItems) {

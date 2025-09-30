@@ -70,8 +70,8 @@ export class BatteryCheckService {
           totalDrones: drones.length,
           lowBatteryCount: lowBatteryDrones.length,
           lowBatteryDrones: lowBatteryDrones.map((d) => ({
-            serialNumber: d.serialNumber,
-            batteryLevel: d.batteryLevel,
+            serialNumber: d.serialNumber as string,
+            batteryLevel: d.batteryLevel as number,
           })),
           checkResults: checkResults,
         },
@@ -87,13 +87,16 @@ export class BatteryCheckService {
         `Battery check completed - Total: ${drones.length}, Low Battery: ${lowBatteryDrones.length}`,
       );
     } catch (error) {
-      this.logger.error('Error during battery level check', error.stack);
+      this.logger.error(
+        'Error during battery level check',
+        (error as Error).stack,
+      );
 
       // Log the error as an activity
       this.eventEmitter.emit('onUserActivity', {
         action: 'BATTERY_CHECK_ERROR',
         description: 'Battery check task failed',
-        feedback: { error: error.message },
+        feedback: { error: (error as Error).message },
         identity: 'SYSTEM',
         maskedAction: false,
         maskedFeedback: false,
