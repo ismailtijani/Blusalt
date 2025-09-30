@@ -19,6 +19,9 @@ export enum MedicationType {
   MEDICATION = 'MEDICATION',
   MEDICAL_SUPPLIES = 'MEDICAL_SUPPLIES',
   OTHER = 'OTHER',
+  MEDICAL_EQUIPMENT = 'MEDICAL_EQUIPMENT',
+  TEST_KIT = 'TEST_KIT',
+  SUPPLEMENT = 'SUPPLEMENT',
 }
 
 export enum DeliveryPriority {

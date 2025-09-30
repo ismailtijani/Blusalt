@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,6 +15,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './shared';
+import { DataSource } from 'typeorm';
+import { DatabaseSeed } from './database/seeds/database.seed';
 
 @Module({
   imports: [
@@ -50,4 +52,25 @@ import { LoggingInterceptor } from './shared';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(
+    private dataSource: DataSource,
+    private configService: ConfigService,
+  ) {}
+
+  async onModuleInit() {
+    // Auto-seed in development
+    const shouldSeed =
+      this.configService.get('NODE_ENV') === 'development' ||
+      this.configService.get('DB_SEED') === 'true';
+
+    if (shouldSeed) {
+      try {
+        const seeder = new DatabaseSeed(this.dataSource);
+        await seeder.seed();
+      } catch (error) {
+        console.error('❌ Database seeding failed:', (error as Error).message);
+      }
+    }
+  }
+}
