@@ -327,22 +327,28 @@ NODE_ENV=development|production
 API_PREFIX=api/blusalt/v1
 
 # Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=your_password
-DB_DATABASE=drone_logistics
-DB_SYNCHRONIZE=true
-DB_LOGGING=false
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USERNAME=postgres
+DATABASE_PASSWORD=your_password
+DATABASE_DATABASE=drone_logistics
+DATABASE_SSL=false
 
 # JWT
 JWT_SECRET=your-jwt-secret-min-32-chars
-JWT_EXPIRATION=15m
+JWT_EXPIRES_IN=15m
 JWT_REFRESH_SECRET=your-refresh-secret-min-32-chars
-JWT_REFRESH_EXPIRATION=7d
+JWT_REFRESH_EXPIRES_IN=7d
+
+# SECURITY
+BCRYPT_ROUNDS=10
+
+# CORS
+CORS_ORIGIN=http://localhost:3000,http://localhost:3001
 
 # File Upload
 MAX_FILE_SIZE=5242880  # 5MB
+UPLOAD_DEST=./uploads
 ALLOWED_FILE_TYPES=image/jpeg,image/png
 
 # API Rate Limiting
@@ -380,4 +386,5 @@ src/
 ```
 
 ---
+
 
