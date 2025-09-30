@@ -16,3 +16,4 @@ export * from './decorators/current-user.decorator';
 export * from './interceptors/response-serializer';
 export * from './decorators/ip-address.decorator';
 export * from './decorators/user-agent.decorator';
+export * from './interceptors/logging.interceptor';

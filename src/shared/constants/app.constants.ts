@@ -2,7 +2,13 @@ import { SetMetadata } from '@nestjs/common';
 import { DroneModel, DroneStatus } from '../enums/enum';
 
 // Security
-export const SENSITIVE_FIELDS = ['password', 'token', 'authorization'] as const;
+export const SENSITIVE_FIELDS = [
+  'password',
+  'token',
+  'authorization',
+  'accessToken',
+  'refreshToken',
+] as const;
 export const SALT_ROUNDS = 10;
 
 // Pagination
@@ -31,18 +37,6 @@ export const EMERGENCY_DELIVERY_PRIORITY = 1000;
 export const DEFAULT_PAGE_SIZE = 10;
 export const MAX_PAGE_SIZE = 100;
 
-// Cache TTL (in seconds)
-export const CACHE_TTL_SHORT = 60; // 1 minute
-export const CACHE_TTL_MEDIUM = 300; // 5 minutes
-export const CACHE_TTL_LONG = 3600; // 1 hour
-export const CACHE_TTL_DAY = 86400; // 24 hours
-
-// JWT
-export const JWT_ACCESS_TOKEN_EXPIRY = '15m';
-export const JWT_REFRESH_TOKEN_EXPIRY = '7d';
-export const JWT_RESET_TOKEN_EXPIRY = '1h';
-export const JWT_VERIFICATION_TOKEN_EXPIRY = '24h';
-
 // Rate Limiting
 export const RATE_LIMIT_WINDOW = 60000; // 1 minute in ms
 export const RATE_LIMIT_MAX_REQUESTS = 100;
@@ -57,14 +51,6 @@ export const ALLOWED_IMAGE_TYPES = [
 
 // Coordinates Precision
 export const COORDINATE_DECIMAL_PLACES = 6;
-
-// Retry Configuration
-export const MAX_RETRY_ATTEMPTS = 3;
-export const RETRY_DELAY_MS = 1000;
-
-// Websocket
-export const WS_HEARTBEAT_INTERVAL = 30000; // 30 seconds
-export const WS_CONNECTION_TIMEOUT = 60000; // 1 minute
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);

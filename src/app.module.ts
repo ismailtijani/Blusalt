@@ -13,6 +13,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { AdminModule } from './modules/admin/admin.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './shared';
 
 @Module({
   imports: [
@@ -41,6 +43,11 @@ import { ScheduleModule } from '@nestjs/schedule';
     AdminModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}
