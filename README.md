@@ -46,8 +46,8 @@ A backend service built with **NestJS** for managing a fleet of drones deliverin
 1. **Clone and install dependencies**
 
    ```bash
-   git clone <repository-url>
-   cd drone-logistics-system
+   git clone  https://github.com/ismailtijani/Blusalt.git
+   cd Blusalt
    npm install
    ```
 
@@ -75,12 +75,8 @@ A backend service built with **NestJS** for managing a fleet of drones deliverin
    JWT_REFRESH_EXPIRATION=7d
 
    # Application
-   PORT=3000
+   PORT=8080
    NODE_ENV=development
-
-   # Redis (optional)
-   REDIS_HOST=localhost
-   REDIS_PORT=6379
    ```
 
 3. **Prepare database**
@@ -133,69 +129,69 @@ npm run docker:down
 ### Authentication Endpoints
 
 ```
-POST   /api/v1/auth/register          Register new user
-POST   /api/v1/auth/login             Login (returns access + refresh tokens)
-POST   /api/v1/auth/refresh           Refresh access token
-POST   /api/v1/auth/logout            Logout (invalidate tokens)
-POST   /api/v1/auth/forgot-password   Request password reset
-POST   /api/v1/auth/reset-password    Reset password with token
+POST   /api/blusalt/v1/auth/          Register new user
+POST   /api/blusalt/v1/auth/login             Login (returns access + refresh tokens)
+POST   /api/blusalt/v1/auth/refresh           Refresh access token
+POST   /api/blusalt/v1/auth/logout            Logout (invalidate tokens)
+POST   /api/blusalt/v1/auth/forgot-password   Request password reset
+POST   /api/blusalt/v1/auth/reset-password    Reset password with token
 ```
 
 ### Drone Management
 
 ```
-POST   /api/v1/drones                        Register new drone (Admin only)
-GET    /api/v1/drones                        List all drones (paginated)
-GET    /api/v1/drones/available              Get available drones for loading
-GET    /api/v1/drones/:droneId               Get drone details
-PATCH  /api/v1/drones/:droneId               Update drone configuration
-DELETE /api/v1/drones/:droneId               Delete drone (soft delete)
-POST   /api/v1/drones/:droneId/load          Load drone with medications
-GET    /api/v1/drones/:droneId/medications   Get loaded medications
-GET    /api/v1/drones/:droneId/battery       Check battery level
-PATCH  /api/v1/drones/:droneId/location      Update drone GPS location
+POST   /api/blusalt/v1/drones                        Register new drone (Admin only)
+GET    /api/blusalt/v1/drones                        List all drones (paginated)
+GET    /api/blusalt/v1/drones/available              Get available drones for loading
+GET    /api/blusalt/v1/drones/:droneId               Get drone details
+PATCH  /api/blusalt/v1/drones/:droneId               Update drone configuration
+DELETE /api/blusalt/v1/drones/:droneId               Delete drone (soft delete)
+POST   /api/blusalt/v1/drones/:droneId/load          Load drone with medications
+GET    /api/blusalt/v1/drones/:droneId/medications   Get loaded medications
+GET    /api/blusalt/v1/drones/:droneId/battery       Check battery level
+PATCH  /api/blusalt/v1/drones/:droneId/location      Update drone GPS location
 ```
 
 ### Medication Catalog
 
 ```
-POST   /api/v1/medications                   Create medication (Admin only)
-GET    /api/v1/medications                   List medications (paginated)
-GET    /api/v1/medications/active            Get active medications only
-GET    /api/v1/medications/search?term=...   Search by name or code
-GET    /api/v1/medications/:medicationId     Get medication details
-PATCH  /api/v1/medications/:medicationId     Update medication
-DELETE /api/v1/medications/:medicationId     Delete medication (soft delete)
+POST   /api/blusalt/v1/medications                   Create medication (Admin only)
+GET    /api/blusalt/v1/medications                   List medications (paginated)
+GET    /api/blusalt/v1/medications/active            Get active medications only
+GET    /api/blusalt/v1/medications/search?term=...   Search by name or code
+GET    /api/blusalt/v1/medications/:medicationId     Get medication details
+PATCH  /api/blusalt/v1/medications/:medicationId     Update medication
+DELETE /api/blusalt/v1/medications/:medicationId     Delete medication (soft delete)
 ```
 
 ### Delivery Management
 
 ```
-POST   /api/v1/deliveries                    Create delivery request
-GET    /api/v1/deliveries                    List deliveries (filtered, paginated)
-GET    /api/v1/deliveries/:deliveryId        Get delivery details
-PATCH  /api/v1/deliveries/:deliveryId        Update delivery status
-POST   /api/v1/deliveries/:deliveryId/assign Auto-assign drone to delivery
-DELETE /api/v1/deliveries/:deliveryId        Cancel delivery
+POST   /api/blusalt/v1/deliveries                    Create delivery request
+GET    /api/blusalt/v1/deliveries                    List deliveries (filtered, paginated)
+GET    /api/blusalt/v1/deliveries/:deliveryId        Get delivery details
+PATCH  /api/blusalt/v1/deliveries/:deliveryId        Update delivery status
+POST   /api/blusalt/v1/deliveries/:deliveryId/assign Auto-assign drone to delivery
+DELETE /api/blusalt/v1/deliveries/:deliveryId        Cancel delivery
 ```
 
 ### User Management (Admin Only)
 
 ```
-POST   /api/v1/users                 Create user
-GET    /api/v1/users                 List users (paginated)
-GET    /api/v1/users/:userId         Get user details
-PATCH  /api/v1/users/:userId         Update user
-DELETE /api/v1/users/:userId         Delete user (soft delete)
+POST   /api/blusalt/v1/users                 Create user
+GET    /api/blusalt/v1/users                 List users (paginated)
+GET    /api/blusalt/v1/users/:userId         Get user details
+PATCH  /api/blusalt/v1/users/:userId         Update user
+DELETE /api/blusalt/v1/users/:userId         Delete user (soft delete)
 ```
 
 ### Audit Logs (Admin/Staff Only)
 
 ```
-GET    /api/v1/audit-logs                         Get activity logs (filtered)
-GET    /api/v1/audit-logs/:auditLogId             Get specific log entry
-GET    /api/v1/audit-logs/user/:userId            Get user activity history
-GET    /api/v1/audit-logs/client/:clientId        Get client activity history
+GET    /api/blusalt/v1/audit-logs                         Get activity logs (filtered)
+GET    /api/blusalt/v1/audit-logs/:auditLogId             Get specific log entry
+GET    /api/blusalt/v1/audit-logs/user/:userId            Get user activity history
+GET    /api/blusalt/v1/audit-logs/client/:clientId        Get client activity history
 ```
 
 **Interactive documentation available at:** `/api/`
@@ -326,9 +322,9 @@ npm run test:watch
 
 ```env
 # Application
-PORT=3000
+PORT=8080
 NODE_ENV=development|production
-API_PREFIX=api/v1
+API_PREFIX=api/blusalt/v1
 
 # Database
 DB_HOST=localhost
@@ -384,3 +380,4 @@ src/
 ```
 
 ---
+
