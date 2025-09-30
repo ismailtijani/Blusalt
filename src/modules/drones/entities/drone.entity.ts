@@ -1,4 +1,3 @@
-import { AuditLog } from 'src/modules/audit-logs/entities/audit-log.entity';
 import { DeliveryRequest } from 'src/modules/deliveries/entities/delivery-request.entity';
 import { BaseEntity, DroneModel, DroneStatus } from 'src/shared';
 import { DroneMedication } from 'src/shared/entities/drone-medication.entity';
@@ -67,9 +66,6 @@ export class Drone extends BaseEntity {
 
   @OneToMany(() => DroneMedication, (droneMedication) => droneMedication.drone)
   droneMedications: DroneMedication[];
-
-  @OneToMany(() => AuditLog, (auditLog) => auditLog.drone)
-  auditLogs: AuditLog[];
 
   // Virtual fields
   get availableCapacity(): number {

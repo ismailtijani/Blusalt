@@ -1,61 +1,66 @@
-import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
-import { Drone } from '../../drones/entities/drone.entity';
-import { AuditAction, BaseEntity } from 'src/shared';
-import { Admin } from 'src/modules/admin/entities/admin.entity';
+import { Entity, Column, Index } from 'typeorm';
+import { BaseEntity } from 'src/shared';
 
 @Entity('audit_logs')
-@Index(['action', 'entityType', 'ipAddress', 'timestamp'])
+@Index(['owner', 'when'])
+@Index(['action', 'when'])
 export class AuditLog extends BaseEntity {
-  @Column({
-    type: 'enum',
-    enum: AuditAction,
-  })
-  action: AuditAction;
+  // Type of action performed (e.g., 'CREATE_DRONE', 'LOAD_MEDICATION', 'LOGIN')
+  @Column({ type: 'varchar', length: 100 })
+  @Index()
+  action: string;
 
-  @Column()
-  entityType: string; // 'User', 'Drone', 'Medication', 'DeliveryRequest'
-
-  @Column({ nullable: true })
-  entityId: string;
-
-  @Column({ nullable: true })
-  userId: string;
-
-  @Column({ nullable: true })
-  adminId: string;
-
-  @Column({ nullable: true })
-  droneId: string;
-
-  @Column({ type: 'text', nullable: true })
+  // Human-readable description of what happened
+  @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'json', nullable: true })
-  oldValues: Record<string, any>;
+  /**
+   * Input data/payload that triggered the action
+   * Stored as JSON for flexibility
+   */
+  @Column({ type: 'jsonb', nullable: true })
+  actionData: Record<string, any>;
 
-  @Column({ type: 'json', nullable: true })
-  newValues: Record<string, any>;
+  /**
+   * Response/result of the action
+   * Stored as JSON for flexibility
+   */
+  @Column({ type: 'jsonb', nullable: true })
+  feedback: Record<string, any>;
 
-  @Column({ length: 45, nullable: true })
+  /**
+   * User identifier (email, username, or user ID)
+   */
+  @Column()
+  identity: string;
+
+  // Whether action data contains sensitive information
+  @Column({ type: 'boolean', default: false })
+  maskedAction: boolean;
+
+  // Whether feedback contains sensitive information
+  @Column({ type: 'boolean', default: false })
+  maskedFeedback: boolean;
+
+  // API endpoint or operation path
+  @Column()
+  what: string;
+
+  // Timestamp when action occurred
+  @Column()
+  @Index()
+  when: Date;
+
+  // User ID who performed the action
+  @Column()
+  @Index()
+  owner: string;
+
+  // IP address of the requester
+  @Column({ nullable: true })
   ipAddress: string;
 
+  // User agent string
   @Column({ nullable: true })
   userAgent: string;
-
-  @Column()
-  timestamp: Date;
-
-  // Relationships
-  @ManyToOne(() => User, (user) => user.auditLogs, { nullable: true })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
-  @ManyToOne(() => Admin, (admin) => admin.auditLogs, { nullable: true })
-  @JoinColumn({ name: 'admin_id' })
-  admin: Admin;
-
-  @ManyToOne(() => Drone, (drone) => drone.auditLogs, { nullable: true })
-  @JoinColumn({ name: 'drone_id' })
-  drone: Drone;
 }

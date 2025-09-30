@@ -1,6 +1,5 @@
-import { AuditLog } from 'src/modules/audit-logs/entities/audit-log.entity';
 import { BaseEntity, UserRole } from 'src/shared';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 @Entity('admins')
 export class Admin extends BaseEntity {
@@ -21,7 +20,4 @@ export class Admin extends BaseEntity {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.STAFF })
   role: UserRole;
-
-  @OneToMany(() => AuditLog, (auditLog) => auditLog.admin)
-  auditLogs: AuditLog[];
 }

@@ -1,4 +1,3 @@
-import { AuditLog } from 'src/modules/audit-logs/entities/audit-log.entity';
 import { DeliveryRequest } from 'src/modules/deliveries/entities/delivery-request.entity';
 import { BaseEntity, UserRole, UserType } from 'src/shared';
 import { Entity, Column, OneToMany, Index } from 'typeorm';
@@ -54,9 +53,6 @@ export class User extends BaseEntity {
   // Relationships
   @OneToMany(() => DeliveryRequest, (deliveryRequest) => deliveryRequest.client)
   deliveryRequests: DeliveryRequest[];
-
-  @OneToMany(() => AuditLog, (auditLog) => auditLog.user)
-  auditLogs: AuditLog[];
 
   // Virtual fields
   get fullName(): string {

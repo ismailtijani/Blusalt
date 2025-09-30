@@ -38,7 +38,16 @@ export interface LoadItem {
   weight: number;
 }
 
-// export interface AuthResponse {
-//   user: Omit<User, 'password' | 'refreshToken'>;
-//   tokens: Tokens;
-// }
+export interface UserActivityLogData {
+  action: any;
+  description: string;
+  feedback?: any;
+  identity: string;
+  maskedAction?: boolean;
+  maskedFeedback?: boolean;
+  what: string;
+  when: Date | string;
+  owner: string;
+  ipAddress?: string;
+  userAgent?: string;
+}
