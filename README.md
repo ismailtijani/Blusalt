@@ -306,11 +306,11 @@ npm run test:watch
 
 ## 👥 Default Users (After Seeding)
 
-| Role   | Email                         | Password     | Permissions                     |
-| ------ | ----------------------------- | ------------ | ------------------------------- |
-| Admin  | admin@dronelogistics.com      | Admin123!@#  | Full system access, user mgmt   |
-| Staff  | operations@dronelogistics.com | Staff123!@#  | Operations, drone monitoring    |
-| Client | orders@generalhospital.com    | Client123!@# | Create orders, track deliveries |
+| Role   | Email                                   | Password          | Permissions                     |
+| ------ | --------------------------------------- | ----------------- | ------------------------------- |
+| Admin  | operations.director@drone-logistics.com | Operations123!    | Full system access, user mgmt   |
+| Staff  | sarah.johnson@drone-logistics.com       | SarahJohnson123!  | Operations, drone monitoring    |
+| Client | thomas.patient@personal.com             | ThomasPatient123! | Create orders, track deliveries |
 
 **First-time setup:** Change all default passwords immediately after deployment.
 
@@ -386,5 +386,3 @@ src/
 ```
 
 ---
-
-
