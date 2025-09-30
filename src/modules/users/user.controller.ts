@@ -149,36 +149,4 @@ export class UserController {
     const users = await this.userService.getRecentUsers(dayCount);
     return new SuccessResponse('Recent users retrieved successfully', users);
   }
-
-  // @Put(':userId/activate')
-  // @HttpCode(HttpStatus.OK)
-  // async activateUser(@Param('userId') userId: string, @Request() req: Request) {
-  //   const user = await this.userService.toggleUserStatus(
-  //     userId,
-  //     true,
-  //     req.user?.id,
-  //   );
-  //   return new SuccessResponse('User activated successfully', user);
-  // }
-
-  // @Put(':userId/deactivate')
-  // @HttpCode(HttpStatus.OK)
-  // async deactivateUser(
-  //   @Param('userId') userId: string,
-  //   @Request() req: Request,
-  // ) {
-  //   const user = await this.userService.toggleUserStatus(
-  //     userId,
-  //     false,
-  //     req.user?.id,
-  //   );
-  //   return new SuccessResponse('User deactivated successfully', user);
-  // }
-
-  // @Delete(Routes.DELETE_USER)
-  // @HttpCode(HttpStatus.OK)
-  // async deleteUser(@Param('userId') userId: string, @Request() req) {
-  //   await this.userService.deleteUser(userId, req.user?.id);
-  //   return new SuccessResponse(ResponseMessages.USER_DELETED);
-  // }
 }

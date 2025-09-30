@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import {
   BaseService,
   ErrorMessages,
@@ -60,17 +59,6 @@ export class AdminService extends BaseService<Admin> {
       role: admin.role,
     };
     const tokens = await this.jwtService.generateTokens(payload);
-
-    // await this.auditLogService.log({
-    //   action: 'LOGIN',
-    //   entityType: 'User',
-    //   entityId: user.id,
-    //   userId: user.id,
-    //   description: `User logged in: ${user.email}`,
-    //   ipAddress,
-    //   userAgent,
-    // });
-
     return { ...admin, ...tokens };
   }
 

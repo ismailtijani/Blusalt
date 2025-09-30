@@ -10,7 +10,6 @@ import {
   UserRole,
 } from 'src/shared';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ConfigService } from '@nestjs/config';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 
@@ -19,8 +18,6 @@ export class UserService extends BaseService<User> {
   constructor(
     @InjectRepository(User)
     userRepository: Repository<User>,
-    // private readonly auditLogService: AuditLogService,
-    private readonly configService: ConfigService,
     private readonly helperService: HelperService,
   ) {
     super(userRepository);
@@ -84,18 +81,6 @@ export class UserService extends BaseService<User> {
     }
 
     const updatedUser = await this.update(userId, updateUserDto);
-
-    // Log user update
-    // await this.auditLogService.log({
-    //   action: 'UPDATE',
-    //   entityType: 'User',
-    //   entityId: userId,
-    //   userId: updatedBy,
-    //   description: `User ${existingUser.email} updated`,
-    //   oldValues: { email: existingUser.email, role: existingUser.role },
-    //   newValues: { email: updateUserDto.email || existingUser.email },
-    // });
-
     return updatedUser;
   }
 
@@ -227,17 +212,6 @@ export class UserService extends BaseService<User> {
   async toggleUserStatus(userId: string, isActive: boolean): Promise<User> {
     await this.findById(userId);
     const updatedUser = await this.update(userId, { isActive });
-
-    // await this.auditLogService.log({
-    //   action: 'UPDATE',
-    //   entityType: 'User',
-    //   entityId: userId,
-    //   userId: updatedBy,
-    //   description: `User ${user.email} ${isActive ? 'activated' : 'deactivated'}`,
-    //   oldValues: { isActive: user.isActive },
-    //   newValues: { isActive },
-    // });
-
     return updatedUser;
   }
 
@@ -245,56 +219,12 @@ export class UserService extends BaseService<User> {
     await this.findById(userId);
     const updatedUser = await this.update(userId, { isVerified: true });
 
-    // await this.auditLogService.log({
-    //   action: 'UPDATE',
-    //   entityType: 'User',
-    //   entityId: userId,
-    //   userId: verifiedBy,
-    //   description: `User ${user.email} email verified`,
-    //   oldValues: { isVerified: false },
-    //   newValues: { isVerified: true },
-    // });
-
     return updatedUser;
   }
 
-  // async changePassword(
-  //   userId: string,
-  //   newPassword: string,
-  //   changedBy?: string,
-  // ): Promise<void> {
-  //   const saltRounds = 12;
-  //   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-  //   await this.repository.update(userId, {
-  //     password: hashedPassword,
-  //     refreshToken: null, // Invalidate refresh tokens
-  //   });
-
-  //   // await this.auditLogService.log({
-  //   //   action: 'UPDATE',
-  //   //   entityType: 'User',
-  //   //   entityId: userId,
-  //   //   userId: changedBy,
-  //   //   description: 'User password changed',
-  //   // });
-  // }
-
-  /**
-   * Delete user (soft delete)
-   */
   async deleteUser(userId: string): Promise<void> {
     await this.findById(userId);
-
     await this.delete(userId);
-
-    // await this.auditLogService.log({
-    //   action: 'DELETE',
-    //   entityType: 'User',
-    //   entityId: userId,
-    //   userId: deletedBy,
-    //   description: `User ${user.email} deleted`,
-    // });
   }
 
   async getClientUsers(): Promise<User[]> {

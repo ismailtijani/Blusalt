@@ -8,13 +8,30 @@ import {
 } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from './config';
+import { rateLimit } from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+
+const loginRouteRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 3, // limit each IP to 3 requests per one minute for login route
+});
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('/api/blusalt/v1/');
+
   const logger = new Logger('Bootstrap');
 
   const configService = app.get(ConfigService);
   const appConfig = AppConfig(configService);
   const PORT = appConfig.PORT;
+
+  app.use('/api/blusalt/v1/users', limiter);
+  app.use('/api/blusalt/v1/auth/login', loginRouteRateLimiter);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -46,9 +63,11 @@ async function bootstrap() {
 
   await app.listen(appConfig.PORT);
   logger.log(
-    `🚀🚀🚀 Application is running on: http://localhost:${PORT}/api/v1`,
+    `🚀🚀🚀 Application is running on: http://localhost:${PORT}/api/blusalt/v1`,
   );
-  logger.log(`API Documentation available at: http://localhost:${PORT}/api`);
+  logger.log(
+    `API Documentation available at: http://localhost:${PORT}/api/blusalt/v1/api`,
+  );
 }
 bootstrap().catch((error) => {
   console.error('Error starting the server:', error);

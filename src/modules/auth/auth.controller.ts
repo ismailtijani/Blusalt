@@ -56,36 +56,4 @@ export class AuthController {
     });
     return new SuccessResponse(ResponseMessages.LOGIN_SUCCESSFUL, response);
   }
-
-  // @Post(Routes.REFRESH_TOKEN)
-  // @HttpCode(HttpStatus.OK)
-  // async refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
-  //   const tokens = await this.authService.refreshTokens(
-  //     refreshTokenDto.refreshToken,
-  //   );
-  //   return new SuccessResponse(ResponseMessages.OPERATION_SUCCESSFUL, tokens);
-  // }
-
-  // @Post(Routes.LOGOUT)
-  // @HttpCode(HttpStatus.OK)
-  // async logout(@Request() req) {
-  //   await this.authService.logout(req.user.id, req.ip, req.get('User-Agent'));
-  //   return new SuccessResponse(ResponseMessages.LOGOUT_SUCCESSFUL);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Put('change-password')
-  // @HttpCode(HttpStatus.OK)
-  // async changePassword(
-  //   @Body() changePasswordDto: ChangePasswordDto,
-  //   @Request() req,
-  // ) {
-  //   await this.authService.changePassword(
-  //     req.user.id,
-  //     changePasswordDto,
-  //     req.ip,
-  //     req.get('User-Agent'),
-  //   );
-  //   return new SuccessResponse('Password changed successfully');
-  // }
 }
